@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CantHuntTerribleSight>poor eyesight</CantHuntTerribleSight>
+  <CantHuntToxicBuildup>risk of toxic buildup</CantHuntToxicBuildup>
+  <CantHuntNeedsLow>low needs</CantHuntNeedsLow>
+  <CantHuntTargetTooSmall>target size</CantHuntTargetTooSmall>
+  <CantHuntTooSlow>slow movement</CantHuntTooSlow>
+  <CantHuntTooWarmCold>outdoor temperature</CantHuntTooWarmCold>
+  <CantHuntDangerousTarget>target too dangerous for sleeping execution</CantHuntDangerousTarget>
+  <HRSettingsModName>Hunting Restriction</HRSettingsModName>
+  <HRSettingShouldCollectExplodables>Haul hunting targets that explode</HRSettingShouldCollectExplodables>
+  <HRTooltipShouldCollectExplodables>Uncheck to have hunter leave boomalopes or boomrats to burn. Check to have hunters collect corpses despite risk.</HRTooltipShouldCollectExplodables>
+  <HRSettingShouldMeleeHuntBigGame>Allow hunting big game with melee weapons</HRSettingShouldMeleeHuntBigGame>
+  <HRSettingShouldMeleeHuntMediumGame>Allow hunting medium game with melee weapons</HRSettingShouldMeleeHuntMediumGame>
+  <HRSettingShouldMeleeHuntSmallGame>Allow hunting small game with melee weapons</HRSettingShouldMeleeHuntSmallGame>
+  <HRSettingShouldHuntPredators>Allow hunting predators</HRSettingShouldHuntPredators>
+  <CantHuntPredatorsNotEnabled>target is a predator and not enabled for hunting</CantHuntPredatorsNotEnabled>
+  <CantHuntMeleeNotEnabled>target not enabled for melee hunting</CantHuntMeleeNotEnabled>
+  <CantHuntMeleeExplodingPrey>target explodes on death</CantHuntMeleeExplodingPrey>
+</LanguageData>
