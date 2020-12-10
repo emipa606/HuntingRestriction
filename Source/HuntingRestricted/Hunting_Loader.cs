@@ -40,6 +40,8 @@ namespace HuntingRestricted
 			listing_Standard.CheckboxLabeled(Translator.Translate(SettingMeleeHuntBigGame), ref settings.shouldMeleeHuntBigGame, null);
 			listing_Standard.Gap(12f);
 			listing_Standard.CheckboxLabeled(Translator.Translate(SettingHuntPredators), ref settings.shouldHuntPredators, null);
+			listing_Standard.Gap(12f);
+			listing_Standard.CheckboxLabeled(Translator.Translate(SettingShouldApprochSleepers), ref settings.shouldApprochSleepers, null);
 			listing_Standard.End();
 		}
 
@@ -112,6 +114,8 @@ namespace HuntingRestricted
 		// Token: 0x04000007 RID: 7
 		private const string SettingHuntPredators = "HRSettingShouldHuntPredators";
 
+		private const string SettingShouldApprochSleepers = "HRSettingShouldApprochSleepers";
+
 		// Token: 0x04000008 RID: 8
 		public static HR_Settings settings;
 
@@ -129,6 +133,7 @@ namespace HuntingRestricted
 				Scribe_Values.Look(ref shouldMeleeHuntMediumGame, "b_ShouldMeleeHuntMediumGame", false, true);
 				Scribe_Values.Look(ref shouldMeleeHuntBigGame, "b_ShouldMeleeHuntBigGame", false, true);
 				Scribe_Values.Look(ref shouldHuntPredators, "b_ShouldHuntPredators", false, true);
+				Scribe_Values.Look(ref shouldApprochSleepers, "b_ShouldApprochSleepers", false, true);
 			}
 
 			// Token: 0x04000021 RID: 33
@@ -145,6 +150,8 @@ namespace HuntingRestricted
 
 			// Token: 0x04000025 RID: 37
 			public bool shouldHuntPredators = false;
+
+			public bool shouldApprochSleepers = false;
 		}
 	}
 }

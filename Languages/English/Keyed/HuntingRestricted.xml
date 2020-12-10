@@ -14,6 +14,7 @@
   <HRSettingShouldMeleeHuntMediumGame>Allow hunting medium game with melee weapons</HRSettingShouldMeleeHuntMediumGame>
   <HRSettingShouldMeleeHuntSmallGame>Allow hunting small game with melee weapons</HRSettingShouldMeleeHuntSmallGame>
   <HRSettingShouldHuntPredators>Allow hunting predators</HRSettingShouldHuntPredators>
+  <HRSettingShouldApprochSleepers>Move in close on sleeping animals</HRSettingShouldApprochSleepers>
   <CantHuntPredatorsNotEnabled>target is a predator and not enabled for hunting</CantHuntPredatorsNotEnabled>
   <CantHuntMeleeNotEnabled>target not enabled for melee hunting</CantHuntMeleeNotEnabled>
   <CantHuntMeleeExplodingPrey>target explodes on death</CantHuntMeleeExplodingPrey>
