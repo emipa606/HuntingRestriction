@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <CantHuntTerribleSight>плохое зрение</CantHuntTerribleSight>
+  <CantHuntToxicBuildup>риск отравления токсинами</CantHuntToxicBuildup>
+  <CantHuntNeedsLow>низкий уровень потребностей</CantHuntNeedsLow>
+  <CantHuntTargetTooSmall>размер цели</CantHuntTargetTooSmall>
+  <CantHuntTooSlow>медленное передвижение</CantHuntTooSlow>
+  <CantHuntTooWarmCold>температура снаружи</CantHuntTooWarmCold>
+  <CantHuntDangerousTarget>цель слишком опасна для исполнения казни во время сна</CantHuntDangerousTarget>
+  <HRSettingsModName>Hunting Restriction</HRSettingsModName>
+  <HRSettingShouldCollectExplodables>Переносить туши взрывающихся при смерти животных</HRSettingShouldCollectExplodables>
+  <HRTooltipShouldCollectExplodables>Отметьте, чтобы охотники подбирали туши несмотря на риск.\n\nОтмените, чтобы охотники оставляли таких животных, как бумалопы и бумкрысы, догорать.</HRTooltipShouldCollectExplodables>
+  <HRSettingShouldMeleeHuntBigGame>Разрешить охоту на крупную дичь с оружием ближнего боя</HRSettingShouldMeleeHuntBigGame>
+  <HRSettingShouldMeleeHuntMediumGame>Разрешить охоту на среднюю дичь с оружием ближнего боя</HRSettingShouldMeleeHuntMediumGame>
+  <HRSettingShouldMeleeHuntSmallGame>Разрешить охоту на мелкую дичь с оружием ближнего боя</HRSettingShouldMeleeHuntSmallGame>
+  <HRSettingShouldHuntPredators>Разрешить охоту на хищников</HRSettingShouldHuntPredators>
+  <HRSettingShouldApprochSleepers>Подходить к спящим животным на расстояние исполнения казни</HRSettingShouldApprochSleepers>
+  <CantHuntPredatorsNotEnabled>охота на хищника не разрешена настройками мода</CantHuntPredatorsNotEnabled>
+  <CantHuntMeleeNotEnabled>охота на эту цель в ближнем бою не разрешена настройками мода</CantHuntMeleeNotEnabled>
+  <CantHuntMeleeExplodingPrey>цель взрывается при смерти</CantHuntMeleeExplodingPrey>
+</LanguageData>
