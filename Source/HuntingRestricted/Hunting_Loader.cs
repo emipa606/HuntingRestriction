@@ -28,7 +28,7 @@ namespace HuntingRestricted
 		{
 			var listing_Standard = new Listing_Standard
 			{
-				ColumnWidth = inRect.width / 2f
+				ColumnWidth = inRect.width / 1.8f
 			};
 			listing_Standard.Begin(inRect);
 			listing_Standard.CheckboxLabeled(Translator.Translate(SettingCollectExplodables), ref settings.shouldCollectExplodables, Translator.Translate(TooltipCollectExplodables));
