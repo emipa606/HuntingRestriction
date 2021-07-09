@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -10,82 +9,94 @@ namespace HuntingRestricted
     // Token: 0x02000004 RID: 4
     public class RangeSelection : JobDriver_Hunt
     {
+        // Token: 0x0400001F RID: 31
+        private const float TriggerHappyRangeReduction = -9f;
+
+        // Token: 0x04000020 RID: 32
+        private const string shootingAccuracy = "ShootingAccuracy";
+
+        // Token: 0x0400001E RID: 30
+        private int jobStartTick = -1;
+
         // Token: 0x0600000A RID: 10 RVA: 0x000029D9 File Offset: 0x00000BD9
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            this.FailOn(delegate ()
+            this.FailOn(delegate
             {
-                if (!job.ignoreDesignations)
+                if (job.ignoreDesignations)
                 {
-                    Pawn victim = Victim;
-                    if (victim != null && !victim.Dead && Map.designationManager.DesignationOn(victim, DesignationDefOf.Hunt) == null)
-                    {
-                        return true;
-                    }
+                    return false;
                 }
+
+                var victim = Victim;
+                if (victim != null && !victim.Dead &&
+                    Map.designationManager.DesignationOn(victim, DesignationDefOf.Hunt) == null)
+                {
+                    return true;
+                }
+
                 return false;
             });
             yield return new Toil
             {
-                initAction = delegate ()
-                {
-                    jobStartTick = Find.TickManager.TicksGame;
-                }
+                initAction = delegate { jobStartTick = Find.TickManager.TicksGame; }
             };
             yield return Toils_Combat.TrySetJobToUseAttackVerb(TargetIndex.A);
-            Toil startCollectCorpse = StartCollectCorpseToil();
-            Toil gotoCastPos = MarvsGotoCastPosition(TargetIndex.A, true).JumpIfDespawnedOrNull(TargetIndex.A, startCollectCorpse).FailOn(() => Find.TickManager.TicksGame > jobStartTick + 5000);
+            var startCollectCorpse = StartCollectCorpseToil();
+            var gotoCastPos = MarvsGotoCastPosition(TargetIndex.A, true)
+                .JumpIfDespawnedOrNull(TargetIndex.A, startCollectCorpse)
+                .FailOn(() => Find.TickManager.TicksGame > jobStartTick + 5000);
             yield return gotoCastPos;
-            Toil moveIfCannotHit = MarvsJumpIfTargetNotHittable(TargetIndex.A, gotoCastPos);
+            var moveIfCannotHit = MarvsJumpIfTargetNotHittable(TargetIndex.A, gotoCastPos);
             yield return moveIfCannotHit;
             yield return MarvsJumpIfTargetDownedDistant(TargetIndex.A, gotoCastPos);
-            yield return Toils_Combat.CastVerb(TargetIndex.A, false).JumpIfDespawnedOrNull(TargetIndex.A, startCollectCorpse).FailOn(() => Find.TickManager.TicksGame > jobStartTick + 5000);
+            yield return Toils_Combat.CastVerb(TargetIndex.A, false)
+                .JumpIfDespawnedOrNull(TargetIndex.A, startCollectCorpse)
+                .FailOn(() => Find.TickManager.TicksGame > jobStartTick + 5000);
             yield return Toils_Jump.JumpIfTargetDespawnedOrNull(TargetIndex.A, startCollectCorpse);
             yield return Toils_Jump.Jump(moveIfCannotHit);
             yield return startCollectCorpse;
-            yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.ClosestTouch).FailOnDespawnedNullOrForbidden(TargetIndex.A).FailOnSomeonePhysicallyInteracting(TargetIndex.A);
-            yield return Toils_Haul.StartCarryThing(TargetIndex.A, false, false, false);
-            Toil carryToCell = Toils_Haul.CarryHauledThingToCell(TargetIndex.B);
+            yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.ClosestTouch)
+                .FailOnDespawnedNullOrForbidden(TargetIndex.A).FailOnSomeonePhysicallyInteracting(TargetIndex.A);
+            yield return Toils_Haul.StartCarryThing(TargetIndex.A);
+            var carryToCell = Toils_Haul.CarryHauledThingToCell(TargetIndex.B);
             yield return carryToCell;
             yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.B, carryToCell, true);
-            yield break;
         }
 
         // Token: 0x0600000B RID: 11 RVA: 0x000029EC File Offset: 0x00000BEC
         private Toil StartCollectCorpseToil()
         {
             var toil = new Toil();
-            toil.initAction = delegate ()
+            toil.initAction = delegate
             {
                 if (Victim == null)
                 {
-                    toil.actor.jobs.EndCurrentJob(JobCondition.Incompletable, true);
+                    toil.actor.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
                 else
                 {
-                    TaleRecorder.RecordTale(TaleDefOf.Hunted, new object[]
+                    TaleRecorder.RecordTale(TaleDefOf.Hunted, pawn, Victim);
+                    var corpse = Victim.Corpse;
+                    if (corpse == null || !pawn.CanReserveAndReach(corpse, PathEndMode.ClosestTouch, Danger.Deadly))
                     {
-                        pawn,
-                        Victim
-                    });
-                    Corpse corpse = Victim.Corpse;
-                    if (corpse == null || !pawn.CanReserveAndReach(corpse, PathEndMode.ClosestTouch, Danger.Deadly, 1, -1, null, false))
-                    {
-                        pawn.jobs.EndCurrentJob(JobCondition.Incompletable, true);
+                        pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     }
                     else
                     {
-                        corpse.SetForbidden(false, true);
-                        if (corpse.InnerPawn.RaceProps.deathActionWorkerClass != null && !Hunting_Loader.settings.shouldCollectExplodables)
+                        corpse.SetForbidden(false);
+                        if (corpse.InnerPawn.RaceProps.deathActionWorkerClass != null &&
+                            !Hunting_Loader.settings.shouldCollectExplodables)
                         {
-                            pawn.jobs.EndCurrentJob(JobCondition.Incompletable, true);
+                            pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                         }
                         else
                         {
-                            if (StoreUtility.TryFindBestBetterStoreCellFor(corpse, pawn, Map, StoragePriority.Unstored, pawn.Faction, out IntVec3 c, true))
+                            if (StoreUtility.TryFindBestBetterStoreCellFor(corpse, pawn, Map, StoragePriority.Unstored,
+                                pawn.Faction, out var c))
                             {
-                                ReservationUtility.Reserve(pawn, corpse, job, 1, -1, null);
-                                ReservationUtility.Reserve(pawn, c, job, 1, -1, null);
+                                pawn.Reserve(corpse, job);
+                                pawn.Reserve(c, job);
                                 job.SetTarget(TargetIndex.B, c);
                                 job.SetTarget(TargetIndex.A, corpse);
                                 job.count = 1;
@@ -93,7 +104,7 @@ namespace HuntingRestricted
                             }
                             else
                             {
-                                pawn.jobs.EndCurrentJob(JobCondition.Succeeded, true);
+                                pawn.jobs.EndCurrentJob(JobCondition.Succeeded);
                             }
                         }
                     }
@@ -105,14 +116,17 @@ namespace HuntingRestricted
         // Token: 0x0600000D RID: 13 RVA: 0x00002A98 File Offset: 0x00000C98
         private static bool IsPawnTriggerHappy(Pawn p)
         {
-            Trait namedTrait = MarvsHuntWhenSane.GetNamedTrait(p, shootingAccuracy);
-            if (namedTrait != null)
+            var namedTrait = MarvsHuntWhenSane.GetNamedTrait(p, shootingAccuracy);
+            if (namedTrait == null)
             {
-                if (namedTrait.Degree == -1)
-                {
-                    return true;
-                }
+                return false;
             }
+
+            if (namedTrait.Degree == -1)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -127,65 +141,45 @@ namespace HuntingRestricted
             }
             else
             {
-                if (weapon == null)
+                var num = 13f;
+                var statFactorFromList = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyTouch);
+                var statFactorFromList2 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyShort);
+                var statFactorFromList3 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyMedium);
+                var statFactorFromList4 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyLong);
+                var num2 = 0f;
+                foreach (var verbProperties in weapon.Verbs)
                 {
-                    result = 0f;
+                    if (verbProperties.range > 0f)
+                    {
+                        num2 = verbProperties.range;
+                    }
                 }
-                else
+
+                if (statFactorFromList > statFactorFromList2)
                 {
-                    var num = 13f;
-                    var statFactorFromList = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyTouch);
-                    var statFactorFromList2 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyShort);
-                    var statFactorFromList3 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyMedium);
-                    var statFactorFromList4 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyLong);
-                    var num2 = 0f;
-                    foreach (VerbProperties verbProperties in weapon.Verbs)
-                    {
-                        if (verbProperties.range > 0f)
-                        {
-                            num2 = verbProperties.range;
-                        }
-                    }
-                    if (statFactorFromList > statFactorFromList2)
-                    {
-                        num = 8f;
-                    }
-                    if (statFactorFromList2 > statFactorFromList3 && statFactorFromList2 > statFactorFromList)
-                    {
-                        if (num2 >= 19f)
-                        {
-                            num = 19f;
-                        }
-                        else
-                        {
-                            num = num2;
-                        }
-                    }
-                    if (statFactorFromList3 > statFactorFromList4 && statFactorFromList3 > statFactorFromList2 && statFactorFromList3 > statFactorFromList)
-                    {
-                        if (num2 >= 34f)
-                        {
-                            num = 34f;
-                        }
-                        else
-                        {
-                            num = num2;
-                        }
-                    }
-                    if (statFactorFromList4 > statFactorFromList3 && statFactorFromList4 > statFactorFromList2 && statFactorFromList4 > statFactorFromList)
-                    {
-                        if (num2 >= 54f)
-                        {
-                            num = 54f;
-                        }
-                        else
-                        {
-                            num = num2;
-                        }
-                    }
-                    result = num;
+                    num = 8f;
                 }
+
+                if (statFactorFromList2 > statFactorFromList3 && statFactorFromList2 > statFactorFromList)
+                {
+                    num = num2 >= 19f ? 19f : num2;
+                }
+
+                if (statFactorFromList3 > statFactorFromList4 && statFactorFromList3 > statFactorFromList2 &&
+                    statFactorFromList3 > statFactorFromList)
+                {
+                    num = num2 >= 34f ? 34f : num2;
+                }
+
+                if (statFactorFromList4 > statFactorFromList3 && statFactorFromList4 > statFactorFromList2 &&
+                    statFactorFromList4 > statFactorFromList)
+                {
+                    num = num2 >= 54f ? 54f : num2;
+                }
+
+                result = num;
             }
+
             return result;
         }
 
@@ -199,13 +193,15 @@ namespace HuntingRestricted
             }
             else
             {
-                var num = (float)huntingTarget.RaceProps.executionRange;
+                var num = (float) huntingTarget.RaceProps.executionRange;
                 if (huntingTarget.RaceProps.deathActionWorkerClass != null)
                 {
                     num += 4f;
                 }
+
                 result = num;
             }
+
             return result;
         }
 
@@ -213,13 +209,19 @@ namespace HuntingRestricted
         private static Toil MarvsJumpIfTargetDownedDistant(TargetIndex ind, Toil jumpToil)
         {
             var toil = new Toil();
-            toil.initAction = delegate ()
+            toil.initAction = delegate
             {
-                Pawn actor = toil.actor;
-                Job curJob = actor.jobs.curJob;
-                var pawn = curJob.GetTarget(ind).Thing as Pawn;
+                var actor = toil.actor;
+                var curJob = actor.jobs.curJob;
+                if (!(curJob.GetTarget(ind).Thing is Pawn pawn))
+                {
+                    return;
+                }
+
                 var executionRange = pawn.RaceProps.executionRange;
-                if (pawn != null && (pawn.Downed || (!pawn.Awake() && !pawn.def.race.predator && Hunting_Loader.settings.shouldApprochSleepers)) && (actor.Position - pawn.Position).LengthHorizontalSquared > executionRange * executionRange)
+                if ((pawn.Downed || !pawn.Awake() && !pawn.def.race.predator &&
+                        Hunting_Loader.settings.shouldApprochSleepers) &&
+                    (actor.Position - pawn.Position).LengthHorizontalSquared > executionRange * executionRange)
                 {
                     actor.jobs.curDriver.JumpToToil(jumpToil);
                 }
@@ -231,54 +233,57 @@ namespace HuntingRestricted
         private static Toil MarvsGotoCastPosition(TargetIndex targetInd, bool closeIfDowned = false)
         {
             var toil = new Toil();
-            toil.initAction = delegate ()
+            toil.initAction = delegate
             {
-                Pawn actor = toil.actor;
-                Job curJob = actor.jobs.curJob;
-                Thing thing = curJob.GetTarget(targetInd).Thing;
-                var pawn = thing as Pawn;
+                var actor = toil.actor;
+                var curJob = actor.jobs.curJob;
+                var thing = curJob.GetTarget(targetInd).Thing;
+                if (thing is not Pawn pawn)
+                {
+                    return;
+                }
+
                 var curWeatherAccuracyMultiplier = pawn.Map.weatherManager.CurWeatherAccuracyMultiplier;
                 var newReq = new CastPositionRequest
                 {
                     caster = toil.actor,
                     target = thing,
                     verb = curJob.verbToUse,
-                    wantCoverFromTarget = false                    
+                    wantCoverFromTarget = false
                 };
-                if (pawn == null)
+                if (!pawn.Downed && !pawn.Awake() && pawn.def.race.predator)
                 {
-                    newReq.maxRangeFromTarget = curJob.verbToUse.verbProps.range;
+                    toil.actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
+
+                if (closeIfDowned &&
+                    (pawn.Downed || Hunting_Loader.settings.shouldApprochSleepers && !pawn.Awake()))
+                {
+                    newReq.maxRangeFromTarget =
+                        Mathf.Min(curJob.verbToUse.verbProps.range, pawn.RaceProps.executionRange);
                 }
                 else
                 {
-                    if (!pawn.Downed && !pawn.Awake() && pawn.def.race.predator)
+                    var def = actor.equipment.Primary.def;
+                    var num = GetGoodWeaponHuntingRange(def);
+                    if (IsPawnTriggerHappy(actor) && !def.IsMeleeWeapon)
                     {
-                        toil.actor.jobs.EndCurrentJob(JobCondition.Incompletable, true);
-                        return;
+                        num += TriggerHappyRangeReduction;
                     }
-                    if (closeIfDowned && (pawn.Downed || (Hunting_Loader.settings.shouldApprochSleepers && !pawn.Awake())))
+
+                    if (!def.IsMeleeWeapon)
                     {
-                        newReq.maxRangeFromTarget = Mathf.Min(curJob.verbToUse.verbProps.range, pawn.RaceProps.executionRange);
+                        num *= curWeatherAccuracyMultiplier;
                     }
-                    else
-                    {
-                        ThingDef def = actor.equipment.Primary.def;
-                        var num = GetGoodWeaponHuntingRange(def);
-                        if (IsPawnTriggerHappy(actor) && !def.IsMeleeWeapon)
-                        {
-                            num += TriggerHappyRangeReduction;
-                        }
-                        if (!def.IsMeleeWeapon)
-                        {
-                            num *= curWeatherAccuracyMultiplier;
-                        }
-                        var safeHuntingDistance = GetSafeHuntingDistance(pawn);
-                        newReq.maxRangeFromTarget = Mathf.Max(num, safeHuntingDistance);
-                    }
+
+                    var safeHuntingDistance = GetSafeHuntingDistance(pawn);
+                    newReq.maxRangeFromTarget = Mathf.Max(num, safeHuntingDistance);
                 }
-                if (!CastPositionFinder.TryFindCastPosition(newReq, out IntVec3 intVec))
+
+                if (!CastPositionFinder.TryFindCastPosition(newReq, out var intVec))
                 {
-                    toil.actor.jobs.EndCurrentJob(JobCondition.Incompletable, true);
+                    toil.actor.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
                 else
                 {
@@ -303,50 +308,51 @@ namespace HuntingRestricted
         private static Toil MarvsJumpIfTargetNotHittable(TargetIndex ind, Toil jumpToil)
         {
             var toil = new Toil();
-            toil.initAction = delegate ()
+            toil.initAction = delegate
             {
-                Pawn actor = toil.actor;
-                Job curJob = actor.jobs.curJob;
+                var actor = toil.actor;
+                var curJob = actor.jobs.curJob;
                 var curWeatherAccuracyMultiplier = actor.Map.weatherManager.CurWeatherAccuracyMultiplier;
-                LocalTargetInfo target = curJob.GetTarget(ind);
+                var target = curJob.GetTarget(ind);
                 var num = 0f;
-                if (!(target.Thing is Pawn) && (curJob.verbToUse == null || !curJob.verbToUse.IsStillUsableBy(actor) || !curJob.verbToUse.CanHitTarget(target)))
+                if (!(target.Thing is Pawn) && (curJob.verbToUse == null || !curJob.verbToUse.IsStillUsableBy(actor) ||
+                                                !curJob.verbToUse.CanHitTarget(target)))
                 {
                     actor.jobs.curDriver.JumpToToil(jumpToil);
                 }
                 else
                 {
-                    ThingDef def = actor.equipment.Primary.def;
+                    var def = actor.equipment.Primary.def;
                     if (curJob.verbToUse != null)
                     {
-                        if (!def.IsMeleeWeapon)
-                        {
-                            num = GetGoodWeaponHuntingRange(def);
-                        }
-                        else
-                        {
-                            num = 0f;
-                        }
+                        num = !def.IsMeleeWeapon ? GetGoodWeaponHuntingRange(def) : 0f;
                     }
+
                     if (IsPawnTriggerHappy(actor) && !def.IsMeleeWeapon)
                     {
                         num += TriggerHappyRangeReduction;
                     }
+
                     if (!def.IsMeleeWeapon)
                     {
                         num *= curWeatherAccuracyMultiplier;
                     }
+
                     var huntingTarget = target.Thing as Pawn;
                     var safeHuntingDistance = GetSafeHuntingDistance(huntingTarget);
                     if (!def.IsMeleeWeapon)
                     {
                         num = Mathf.Max(safeHuntingDistance, num);
                     }
+
                     if ((actor.Position - target.Cell).LengthHorizontal <= safeHuntingDistance)
                     {
                         return;
                     }
-                    if ((curJob.verbToUse != null && !curJob.verbToUse.IsStillUsableBy(actor)) || (curJob.verbToUse != null && !curJob.verbToUse.CanHitTarget(target)) || (curJob.verbToUse != null && (actor.Position - target.Cell).LengthHorizontalSquared > num * num))
+
+                    if (curJob.verbToUse != null && !curJob.verbToUse.IsStillUsableBy(actor) ||
+                        curJob.verbToUse != null && !curJob.verbToUse.CanHitTarget(target) ||
+                        curJob.verbToUse != null && (actor.Position - target.Cell).LengthHorizontalSquared > num * num)
                     {
                         actor.jobs.curDriver.JumpToToil(jumpToil);
                     }
@@ -354,14 +360,5 @@ namespace HuntingRestricted
             };
             return toil;
         }
-
-        // Token: 0x0400001E RID: 30
-        private int jobStartTick = -1;
-
-        // Token: 0x0400001F RID: 31
-        private const float TriggerHappyRangeReduction = -9f;
-
-        // Token: 0x04000020 RID: 32
-        private const string shootingAccuracy = "ShootingAccuracy";
     }
 }
