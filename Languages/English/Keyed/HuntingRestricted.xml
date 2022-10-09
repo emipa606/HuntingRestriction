@@ -3,6 +3,7 @@
   <CantHuntTerribleSight>poor eyesight</CantHuntTerribleSight>
   <CantHuntToxicBuildup>risk of toxic buildup</CantHuntToxicBuildup>
   <CantHuntNeedsLow>low needs</CantHuntNeedsLow>
+  <HRSettingModVersion>Installed mod-version: {0}</HRSettingModVersion>
   <CantHuntTargetTooSmall>target size</CantHuntTargetTooSmall>
   <CantHuntTooSlow>slow movement</CantHuntTooSlow>
   <CantHuntTooWarmCold>outdoor temperature</CantHuntTooWarmCold>

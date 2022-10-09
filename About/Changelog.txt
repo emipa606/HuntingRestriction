@@ -1,5 +1,9 @@
 # Changelog for HuntingRestriction
 
+1.4.1 - Mod updated for 1.4 and passed autotests.
+Used DeepL to update translations for Russian
+
+
 1.0.3.0 - Mod updated for 1.3 and passed autotests
 
 
