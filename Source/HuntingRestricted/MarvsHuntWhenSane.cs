@@ -10,10 +10,6 @@ public class MarvsHuntWhenSane
 
     private const float ImpairedSightThresh = 0.85f;
 
-    private const float hungerBlockPercent = 0.4f;
-
-    private const float sleepBlockPercent = 0.3f;
-
     private const float accuracyPenaltyBlock = 0.7f;
 
     private const float movementCapacityBlock = 0.5f;
@@ -176,8 +172,8 @@ public class MarvsHuntWhenSane
         var intVec = pawn.Position - t.Position;
         var distanceCheck = intVec.LengthManhattan > distFar;
         _ = intVec.LengthManhattan > distVeryFar;
-        var pawnHungry = pawn.needs.food is { CurLevelPercentage: < hungerBlockPercent };
-        var pawnTired = pawn.needs.rest is { CurLevelPercentage: < sleepBlockPercent };
+        var pawnHungry = pawn.needs.food?.CurLevelPercentage < Hunting_Loader.settings.minimumFoodLevel;
+        var pawnTired = pawn.needs.rest.CurLevelPercentage < Hunting_Loader.settings.minimumSleepLevel;
         var pawnSlowed = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) < movementCapacityBlock;
         var num = 0f;
         foreach (var keyValuePair in pawn.Map.resourceCounter.AllCountedAmounts)
@@ -201,15 +197,17 @@ public class MarvsHuntWhenSane
             return false;
         }
 
-        if ((pawn.Map.mapTemperature.OutdoorTemp > pawn.SafeTemperatureRange().max ||
+        if (!Hunting_Loader.settings.ignoreTemperature &&
+            (pawn.Map.mapTemperature.OutdoorTemp > pawn.SafeTemperatureRange().max ||
              pawn.Map.mapTemperature.OutdoorTemp < pawn.SafeTemperatureRange().min) &&
-            (distanceCheck || pawnSlowed) && !(num < pawn.Map.mapPawns.FreeColonistsCount * 2))
+            (distanceCheck || pawnSlowed) &&
+            !(num < pawn.Map.mapPawns.FreeColonistsCount * 2))
         {
             JobFailReason.Is(TemperatureMsg.Translate());
             return false;
         }
 
-        var statValue = pawn.GetStatValue(StatDefOf.ToxicResistance);
+        var statValue = pawn.GetStatValue(StatDefOf.ToxicEnvironmentResistance);
         if (!pawn.Map.gameConditionManager.ConditionIsActive(GameConditionDefOf.ToxicFallout) ||
             (!(statValue > 0f) || !(intVec.LengthManhattan > distFallout * statValue)) && !pawnSlowed)
         {

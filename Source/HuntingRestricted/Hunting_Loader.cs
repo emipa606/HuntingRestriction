@@ -27,6 +27,14 @@ internal class Hunting_Loader : Mod
 
     private const string SettingShouldApprochSleepers = "HRSettingShouldApprochSleepers";
 
+    private const string SettingMinimumFoodLevel = "HRSettingMinimumFoodLevel";
+
+    private const string SettingMinimumSleepLevel = "HRSettingMinimumSleepLevel";
+
+    private const string SettingIgnoreTemperature = "HRSettingIgnoreTemperature";
+
+    private const string SettingNeedsTitle = "HRSettingNeedsTitle";
+
     public static HR_Settings settings;
 
     private static Harmony harmony;
@@ -38,8 +46,7 @@ internal class Hunting_Loader : Mod
         PatchHH();
         settings = GetSettings<HR_Settings>();
         currentVersion =
-            VersionFromManifest.GetVersionFromModMetaData(
-                ModLister.GetActiveModWithIdentifier("Mlie.HuntingRestriction"));
+            VersionFromManifest.GetVersionFromModMetaData(content.ModMetaData);
     }
 
     public override string SettingsCategory()
@@ -69,6 +76,21 @@ internal class Hunting_Loader : Mod
         listing_Standard.Gap();
         listing_Standard.CheckboxLabeled(SettingShouldApprochSleepers.Translate(),
             ref settings.shouldApprochSleepers);
+
+        listing_Standard.Gap();
+        listing_Standard.CheckboxLabeled(SettingIgnoreTemperature.Translate(),
+            ref settings.ignoreTemperature);
+
+        listing_Standard.Gap();
+        listing_Standard.Label(SettingNeedsTitle.Translate());
+        settings.minimumFoodLevel = listing_Standard.SliderLabeled(
+            SettingMinimumFoodLevel.Translate(settings.minimumFoodLevel.ToStringPercent()), settings.minimumFoodLevel,
+            0f, 1f);
+        listing_Standard.Gap();
+        settings.minimumSleepLevel = listing_Standard.SliderLabeled(
+            SettingMinimumSleepLevel.Translate(settings.minimumSleepLevel.ToStringPercent()),
+            settings.minimumSleepLevel,
+            0f, 1f);
         if (currentVersion != null)
         {
             listing_Standard.Gap();
@@ -129,6 +151,11 @@ internal class Hunting_Loader : Mod
 
     public class HR_Settings : ModSettings
     {
+        public bool ignoreTemperature;
+        public float minimumFoodLevel = 0.4f;
+
+        public float minimumSleepLevel = 0.3f;
+
         public bool shouldApprochSleepers;
 
         public bool shouldCollectExplodables;
@@ -143,6 +170,9 @@ internal class Hunting_Loader : Mod
 
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref minimumFoodLevel, "b_MinimumFoodLevel", 0.4f, true);
+            Scribe_Values.Look(ref minimumSleepLevel, "b_MinimumSleepLevel", 0.3f, true);
+            Scribe_Values.Look(ref ignoreTemperature, "b_IgnoreTemperature", false, true);
             Scribe_Values.Look(ref shouldCollectExplodables, "b_ShouldCollectExplodables", false, true);
             Scribe_Values.Look(ref shouldMeleeHuntSmallGame, "b_ShouldMeleeHuntSmallGame", false, true);
             Scribe_Values.Look(ref shouldMeleeHuntMediumGame, "b_ShouldMeleeHuntMediumGame", false, true);

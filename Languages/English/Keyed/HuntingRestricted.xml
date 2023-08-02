@@ -3,6 +3,10 @@
   <CantHuntTerribleSight>poor eyesight</CantHuntTerribleSight>
   <CantHuntToxicBuildup>risk of toxic buildup</CantHuntToxicBuildup>
   <CantHuntNeedsLow>low needs</CantHuntNeedsLow>
+  <HRSettingNeedsTitle>Block hunting when under the following need levels</HRSettingNeedsTitle>
+  <HRSettingMinimumFoodLevel>Hunger-need: {0}</HRSettingMinimumFoodLevel>
+  <HRSettingMinimumSleepLevel>Sleep-need: {0}</HRSettingMinimumSleepLevel>
+  <HRSettingIgnoreTemperature>Ignore dangerous temperature check</HRSettingIgnoreTemperature>
   <HRSettingModVersion>Installed mod-version: {0}</HRSettingModVersion>
   <CantHuntTargetTooSmall>target size</CantHuntTargetTooSmall>
   <CantHuntTooSlow>slow movement</CantHuntTooSlow>
