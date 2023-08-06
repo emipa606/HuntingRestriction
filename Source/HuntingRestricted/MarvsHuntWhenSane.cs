@@ -75,7 +75,7 @@ public class MarvsHuntWhenSane
         }
     }
 
-    public static void PostFix2(ref bool __result, Pawn pawn, Thing t, bool forced)
+    public static void PostFix2(ref bool __result, Pawn pawn, Thing t)
     {
         var primary = pawn.equipment.Primary;
         if (primary.def.IsMeleeWeapon)
@@ -172,8 +172,10 @@ public class MarvsHuntWhenSane
         var intVec = pawn.Position - t.Position;
         var distanceCheck = intVec.LengthManhattan > distFar;
         _ = intVec.LengthManhattan > distVeryFar;
-        var pawnHungry = pawn.needs.food?.CurLevelPercentage < Hunting_Loader.settings.minimumFoodLevel;
-        var pawnTired = pawn.needs.rest.CurLevelPercentage < Hunting_Loader.settings.minimumSleepLevel;
+        var pawnHungry = pawn.needs.food != null &&
+                         pawn.needs.food.CurLevelPercentage < Hunting_Loader.settings.minimumFoodLevel;
+        var pawnTired = pawn.needs.rest != null &&
+                        pawn.needs.rest.CurLevelPercentage < Hunting_Loader.settings.minimumSleepLevel;
         var pawnSlowed = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) < movementCapacityBlock;
         var num = 0f;
         foreach (var keyValuePair in pawn.Map.resourceCounter.AllCountedAmounts)

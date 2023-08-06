@@ -1,5 +1,8 @@
 # Changelog for HuntingRestriction
 
+1.4.3 - Fix for pawns that do not have needs like sleep or food
+
+
 1.4.2 - Added mod-settings for hunger, sleep and temperature.
 Used DeepL to update translations for ChineseSimplified, French, German, Russian
 

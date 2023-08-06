@@ -76,6 +76,4 @@ If you like this mod, why not consider looking at some of my http://steamcommuni
 -  If you have the solution for a problem, please post it to the GitHub repository.
 
 
-
-
-https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124]Last updated 2023-08-02
+https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124]Last updated 2023-08-06
