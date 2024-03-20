@@ -74,7 +74,7 @@ public class RangeSelection : JobDriver_Hunt
                 else
                 {
                     corpse.SetForbidden(false);
-                    if (corpse.InnerPawn.RaceProps.deathActionWorkerClass != null &&
+                    if (corpse.InnerPawn.RaceProps.DeathActionWorker != null &&
                         !Hunting_Loader.settings.shouldCollectExplodables)
                     {
                         pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
@@ -175,7 +175,7 @@ public class RangeSelection : JobDriver_Hunt
         else
         {
             var num = (float)huntingTarget.RaceProps.executionRange;
-            if (huntingTarget.RaceProps.deathActionWorkerClass != null)
+            if (huntingTarget.RaceProps.DeathActionWorker != null)
             {
                 num += 4f;
             }

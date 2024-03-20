@@ -111,7 +111,7 @@ public class MarvsHuntWhenSane
 
         var primary = pawn.equipment.Primary;
         var isMeleeWeapon = primary.def.IsMeleeWeapon;
-        if (isMeleeWeapon && pawn2.RaceProps.deathActionWorkerClass != null)
+        if (isMeleeWeapon && pawn2.RaceProps.DeathActionWorker != null)
         {
             JobFailReason.Is(MeleeExplodingPrey.Translate());
             return false;
