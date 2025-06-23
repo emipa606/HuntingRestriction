@@ -1,4 +1,4 @@
-# HuntingRestriction
+# [Hunting Restriction (Continued)](https://steamcommunity.com/sharedfiles/filedetails/?id=2314356124)
 
 ![Image](https://i.imgur.com/buuPQel.png)
 
@@ -9,7 +9,6 @@ with permission.
 - Added setting for the "move in close on sleeping animals" behaviour
 
 ![Image](https://i.imgur.com/pufA0kM.png)
-
 	
 ![Image](https://i.imgur.com/Z4GOv8H.png)
 
@@ -56,13 +55,13 @@ New! There are options to enable melee hunting for various sizes of game (big, m
 ## Don't comment asking when the mod will update.
 
 
-Comments regarding mod updates have become a nuisance. I can understand that people get excited and post before they think or read, but I have https://twitter.com/marvinkosh]social media, go and check there to see if I have posted about RimWorld. You will be saving me a lot of time.
+Comments regarding mod updates have become a nuisance. I can understand that people get excited and post before they think or read, but I have [social media](https://twitter.com/marvinkosh), go and check there to see if I have posted about RimWorld. You will be saving me a lot of time.
 
-http://steamcommunity.com/sharedfiles/filedetails/?id=953084305]Go to the Alpha 17 version.
+[Go to the Alpha 17 version](http://steamcommunity.com/sharedfiles/filedetails/?id=953084305).
 
 Go to Ludeon Forums for more information and direct download links: https://ludeon.com/forums/index.php?topic=30508.0
 
-If you like this mod, why not consider looking at some of my http://steamcommunity.com/id/marvinkosh/myworkshopfiles/?appid=294100]other mods?
+If you like this mod, why not consider looking at some of my [other mods](http://steamcommunity.com/id/marvinkosh/myworkshopfiles/?appid=294100)?
 
 ![Image](https://i.imgur.com/PwoNOj4.png)
 
@@ -70,13 +69,12 @@ If you like this mod, why not consider looking at some of my http://steamcommuni
 
 -  See if the the error persists if you just have this mod and its requirements active.
 -  If not, try adding your other mods until it happens again.
--  Post your error-log using https://steamcommunity.com/workshop/filedetails/?id=818773962]HugsLib or the standalone https://steamcommunity.com/sharedfiles/filedetails/?id=2873415404]Uploader and command Ctrl+F12
+-  Post your error-log using [HugsLib](https://steamcommunity.com/workshop/filedetails/?id=818773962) or the standalone [Uploader](https://steamcommunity.com/sharedfiles/filedetails/?id=2873415404) and command Ctrl+F12
 -  For best support, please use the Discord-channel for error-reporting.
 -  Do not report errors by making a discussion-thread, I get no notification of that.
 -  If you have the solution for a problem, please post it to the GitHub repository.
--  Use https://github.com/RimSort/RimSort/releases/latest]RimSort to sort your mods
+-  Use [RimSort](https://github.com/RimSort/RimSort/releases/latest) to sort your mods
 
+ 
 
-
-https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124]![Image](https://img.shields.io/github/v/release/emipa606/HuntingRestriction?label=latest%20version&style=plastic&color=9f1111&labelColor=black)
-
+[![Image](https://img.shields.io/github/v/release/emipa606/HuntingRestriction?label=latest%20version&style=plastic&color=9f1111&labelColor=black)](https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124) | tags:  target,  decision

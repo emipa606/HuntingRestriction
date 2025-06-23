@@ -1,7 +1,6 @@
 using System.Reflection;
 using HarmonyLib;
 using Mlie;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -35,16 +34,14 @@ internal class Hunting_Loader : Mod
 
     private const string SettingNeedsTitle = "HRSettingNeedsTitle";
 
-    public static HR_Settings settings;
-
-    private static Harmony harmony;
+    public static HR_Settings Settings;
 
     private static string currentVersion;
 
     public Hunting_Loader(ModContentPack content) : base(content)
     {
-        PatchHH();
-        settings = GetSettings<HR_Settings>();
+        new Harmony("net.marvinkosh.rimworld.mod.huntingrestriction").PatchAll(Assembly.GetExecutingAssembly());
+        Settings = GetSettings<HR_Settings>();
         currentVersion =
             VersionFromManifest.GetVersionFromModMetaData(content.ModMetaData);
     }
@@ -56,129 +53,82 @@ internal class Hunting_Loader : Mod
 
     public override void DoSettingsWindowContents(Rect inRect)
     {
-        var listing_Standard = new Listing_Standard
+        var listingStandard = new Listing_Standard
         {
             ColumnWidth = inRect.width / 1.8f
         };
-        listing_Standard.Begin(inRect);
-        listing_Standard.CheckboxLabeled(SettingCollectExplodables.Translate(),
-            ref settings.shouldCollectExplodables, TooltipCollectExplodables.Translate());
-        listing_Standard.Gap();
-        listing_Standard.CheckboxLabeled(SettingMeleeHuntSmallGame.Translate(),
-            ref settings.shouldMeleeHuntSmallGame);
-        listing_Standard.Gap();
-        listing_Standard.CheckboxLabeled(SettingMeleeHuntMediumGame.Translate(),
-            ref settings.shouldMeleeHuntMediumGame);
-        listing_Standard.Gap();
-        listing_Standard.CheckboxLabeled(SettingMeleeHuntBigGame.Translate(), ref settings.shouldMeleeHuntBigGame);
-        listing_Standard.Gap();
-        listing_Standard.CheckboxLabeled(SettingHuntPredators.Translate(), ref settings.shouldHuntPredators);
-        listing_Standard.Gap();
-        listing_Standard.CheckboxLabeled(SettingShouldApprochSleepers.Translate(),
-            ref settings.shouldApprochSleepers);
+        listingStandard.Begin(inRect);
+        listingStandard.CheckboxLabeled(SettingCollectExplodables.Translate(),
+            ref Settings.ShouldCollectExplodables, TooltipCollectExplodables.Translate());
+        listingStandard.Gap();
+        listingStandard.CheckboxLabeled(SettingMeleeHuntSmallGame.Translate(),
+            ref Settings.ShouldMeleeHuntSmallGame);
+        listingStandard.Gap();
+        listingStandard.CheckboxLabeled(SettingMeleeHuntMediumGame.Translate(),
+            ref Settings.ShouldMeleeHuntMediumGame);
+        listingStandard.Gap();
+        listingStandard.CheckboxLabeled(SettingMeleeHuntBigGame.Translate(), ref Settings.ShouldMeleeHuntBigGame);
+        listingStandard.Gap();
+        listingStandard.CheckboxLabeled(SettingHuntPredators.Translate(), ref Settings.ShouldHuntPredators);
+        listingStandard.Gap();
+        listingStandard.CheckboxLabeled(SettingShouldApprochSleepers.Translate(),
+            ref Settings.ShouldApproachSleepers);
 
-        listing_Standard.Gap();
-        listing_Standard.CheckboxLabeled(SettingIgnoreTemperature.Translate(),
-            ref settings.ignoreTemperature);
+        listingStandard.Gap();
+        listingStandard.CheckboxLabeled(SettingIgnoreTemperature.Translate(),
+            ref Settings.IgnoreTemperature);
 
-        listing_Standard.Gap();
-        listing_Standard.Label(SettingNeedsTitle.Translate());
-        settings.minimumFoodLevel = listing_Standard.SliderLabeled(
-            SettingMinimumFoodLevel.Translate(settings.minimumFoodLevel.ToStringPercent()), settings.minimumFoodLevel,
+        listingStandard.Gap();
+        listingStandard.Label(SettingNeedsTitle.Translate());
+        Settings.MinimumFoodLevel = listingStandard.SliderLabeled(
+            SettingMinimumFoodLevel.Translate(Settings.MinimumFoodLevel.ToStringPercent()), Settings.MinimumFoodLevel,
             0f, 1f);
-        listing_Standard.Gap();
-        settings.minimumSleepLevel = listing_Standard.SliderLabeled(
-            SettingMinimumSleepLevel.Translate(settings.minimumSleepLevel.ToStringPercent()),
-            settings.minimumSleepLevel,
+        listingStandard.Gap();
+        Settings.MinimumSleepLevel = listingStandard.SliderLabeled(
+            SettingMinimumSleepLevel.Translate(Settings.MinimumSleepLevel.ToStringPercent()),
+            Settings.MinimumSleepLevel,
             0f, 1f);
         if (currentVersion != null)
         {
-            listing_Standard.Gap();
+            listingStandard.Gap();
             GUI.contentColor = Color.gray;
-            listing_Standard.Label(SettingModVersion.Translate(currentVersion));
+            listingStandard.Label(SettingModVersion.Translate(currentVersion));
             GUI.contentColor = Color.white;
         }
 
-        listing_Standard.End();
-    }
-
-    private static void PatchHH()
-    {
-        harmony = new Harmony("net.marvinkosh.rimworld.mod.huntingrestriction");
-        Log.Message("Hunting Restriction: Trying to patch WorkGiver_HunterHunt.ShouldSkip.");
-        var method =
-            typeof(WorkGiver_HunterHunt).GetMethod("ShouldSkip", BindingFlags.Instance | BindingFlags.Public);
-        if (method == null)
-        {
-            Log.Warning(
-                "Hunting Restriction: Got null original method when attempting to find original WorkGiver_HunterHunt.ShouldSkip.");
-        }
-        else
-        {
-            var method2 = typeof(MarvsHuntWhenSane).GetMethod("PostFix");
-            if (method2 == null)
-            {
-                Log.Warning("Hunting Restriction: Got null method when attempting to load postfix.");
-            }
-            else
-            {
-                harmony.Patch(method, null, new HarmonyMethod(method2));
-                Log.Message("Hunting Restriction: Patched WorkGiver_HunterHunt.ShouldSkip.");
-                Log.Message("Hunting Restriction: Trying to patch WorkGiver_HunterHunt.HasJobOnThing.");
-                method = typeof(WorkGiver_HunterHunt).GetMethod("HasJobOnThing",
-                    BindingFlags.Instance | BindingFlags.Public);
-                if (method == null)
-                {
-                    Log.Warning(
-                        "Hunting Restriction: Got null original method when attempting to find original WorkGiver_HunterHunt.HasJobOnThing.");
-                }
-                else
-                {
-                    method2 = typeof(MarvsHuntWhenSane).GetMethod("PostFix2");
-                    if (method2 == null)
-                    {
-                        Log.Warning("Hunting Restriction: Got null method when attempting to load second postfix.");
-                    }
-                    else
-                    {
-                        harmony.Patch(method, null, new HarmonyMethod(method2));
-                        Log.Message("Hunting Restriction: Patched WorkGiver_HunterHunt.HasJobOnThing.");
-                    }
-                }
-            }
-        }
+        listingStandard.End();
     }
 
     public class HR_Settings : ModSettings
     {
-        public bool ignoreTemperature;
-        public float minimumFoodLevel = 0.4f;
+        public bool IgnoreTemperature;
+        public float MinimumFoodLevel = 0.4f;
 
-        public float minimumSleepLevel = 0.3f;
+        public float MinimumSleepLevel = 0.3f;
 
-        public bool shouldApprochSleepers;
+        public bool ShouldApproachSleepers;
 
-        public bool shouldCollectExplodables;
+        public bool ShouldCollectExplodables;
 
-        public bool shouldHuntPredators;
+        public bool ShouldHuntPredators;
 
-        public bool shouldMeleeHuntBigGame;
+        public bool ShouldMeleeHuntBigGame;
 
-        public bool shouldMeleeHuntMediumGame;
+        public bool ShouldMeleeHuntMediumGame;
 
-        public bool shouldMeleeHuntSmallGame;
+        public bool ShouldMeleeHuntSmallGame;
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref minimumFoodLevel, "b_MinimumFoodLevel", 0.4f, true);
-            Scribe_Values.Look(ref minimumSleepLevel, "b_MinimumSleepLevel", 0.3f, true);
-            Scribe_Values.Look(ref ignoreTemperature, "b_IgnoreTemperature", false, true);
-            Scribe_Values.Look(ref shouldCollectExplodables, "b_ShouldCollectExplodables", false, true);
-            Scribe_Values.Look(ref shouldMeleeHuntSmallGame, "b_ShouldMeleeHuntSmallGame", false, true);
-            Scribe_Values.Look(ref shouldMeleeHuntMediumGame, "b_ShouldMeleeHuntMediumGame", false, true);
-            Scribe_Values.Look(ref shouldMeleeHuntBigGame, "b_ShouldMeleeHuntBigGame", false, true);
-            Scribe_Values.Look(ref shouldHuntPredators, "b_ShouldHuntPredators", false, true);
-            Scribe_Values.Look(ref shouldApprochSleepers, "b_ShouldApprochSleepers", false, true);
+            Scribe_Values.Look(ref MinimumFoodLevel, "b_MinimumFoodLevel", 0.4f, true);
+            Scribe_Values.Look(ref MinimumSleepLevel, "b_MinimumSleepLevel", 0.3f, true);
+            Scribe_Values.Look(ref IgnoreTemperature, "b_IgnoreTemperature", false, true);
+            Scribe_Values.Look(ref ShouldCollectExplodables, "b_ShouldCollectExplodables", false, true);
+            Scribe_Values.Look(ref ShouldMeleeHuntSmallGame, "b_ShouldMeleeHuntSmallGame", false, true);
+            Scribe_Values.Look(ref ShouldMeleeHuntMediumGame, "b_ShouldMeleeHuntMediumGame", false, true);
+            Scribe_Values.Look(ref ShouldMeleeHuntBigGame, "b_ShouldMeleeHuntBigGame", false, true);
+            Scribe_Values.Look(ref ShouldHuntPredators, "b_ShouldHuntPredators", false, true);
+            Scribe_Values.Look(ref ShouldApproachSleepers, "b_ShouldApprochSleepers", false, true);
         }
     }
 }

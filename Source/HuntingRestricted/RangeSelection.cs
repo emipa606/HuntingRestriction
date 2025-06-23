@@ -10,7 +10,7 @@ public class RangeSelection : JobDriver_Hunt
 {
     private const float TriggerHappyRangeReduction = -9f;
 
-    private const string shootingAccuracy = "ShootingAccuracy";
+    private const string ShootingAccuracy = "ShootingAccuracy";
 
     private int jobStartTick = -1;
 
@@ -32,14 +32,14 @@ public class RangeSelection : JobDriver_Hunt
             initAction = delegate { jobStartTick = Find.TickManager.TicksGame; }
         };
         yield return Toils_Combat.TrySetJobToUseAttackVerb(TargetIndex.A);
-        var startCollectCorpse = StartCollectCorpseToil();
-        var gotoCastPos = MarvsGotoCastPosition(TargetIndex.A, true)
+        var startCollectCorpse = startCollectCorpseToil();
+        var gotoCastPos = marvsGotoCastPosition(TargetIndex.A, true)
             .JumpIfDespawnedOrNull(TargetIndex.A, startCollectCorpse)
             .FailOn(() => Find.TickManager.TicksGame > jobStartTick + 5000);
         yield return gotoCastPos;
-        var moveIfCannotHit = MarvsJumpIfTargetNotHittable(TargetIndex.A, gotoCastPos);
+        var moveIfCannotHit = marvsJumpIfTargetNotHittable(TargetIndex.A, gotoCastPos);
         yield return moveIfCannotHit;
-        yield return MarvsJumpIfTargetDownedDistant(TargetIndex.A, gotoCastPos);
+        yield return marvsJumpIfTargetDownedDistant(TargetIndex.A, gotoCastPos);
         yield return Toils_Combat.CastVerb(TargetIndex.A, false)
             .JumpIfDespawnedOrNull(TargetIndex.A, startCollectCorpse)
             .FailOn(() => Find.TickManager.TicksGame > jobStartTick + 5000);
@@ -54,7 +54,7 @@ public class RangeSelection : JobDriver_Hunt
         yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.B, carryToCell, true);
     }
 
-    private Toil StartCollectCorpseToil()
+    private Toil startCollectCorpseToil()
     {
         var toil = new Toil();
         toil.initAction = delegate
@@ -75,7 +75,7 @@ public class RangeSelection : JobDriver_Hunt
                 {
                     corpse.SetForbidden(false);
                     if (corpse.InnerPawn.RaceProps.DeathActionWorker != null &&
-                        !Hunting_Loader.settings.shouldCollectExplodables)
+                        !Hunting_Loader.Settings.ShouldCollectExplodables)
                     {
                         pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     }
@@ -102,9 +102,9 @@ public class RangeSelection : JobDriver_Hunt
         return toil;
     }
 
-    private static bool IsPawnTriggerHappy(Pawn p)
+    private static bool isPawnTriggerHappy(Pawn p)
     {
-        var namedTrait = MarvsHuntWhenSane.GetNamedTrait(p, shootingAccuracy);
+        var namedTrait = MarvsHuntWhenSane.GetNamedTrait(p, ShootingAccuracy);
         if (namedTrait == null)
         {
             return false;
@@ -113,7 +113,7 @@ public class RangeSelection : JobDriver_Hunt
         return namedTrait.Degree == -1;
     }
 
-    private static float GetGoodWeaponHuntingRange(ThingDef weapon)
+    private static float getGoodWeaponHuntingRange(ThingDef weapon)
     {
         var isMeleeWeapon = weapon.IsMeleeWeapon;
         float result;
@@ -165,7 +165,7 @@ public class RangeSelection : JobDriver_Hunt
         return result;
     }
 
-    private static float GetSafeHuntingDistance(Pawn huntingTarget)
+    private static float getSafeHuntingDistance(Pawn huntingTarget)
     {
         float result;
         if (huntingTarget == null)
@@ -186,7 +186,7 @@ public class RangeSelection : JobDriver_Hunt
         return result;
     }
 
-    private static Toil MarvsJumpIfTargetDownedDistant(TargetIndex ind, Toil jumpToil)
+    private static Toil marvsJumpIfTargetDownedDistant(TargetIndex ind, Toil jumpToil)
     {
         var toil = new Toil();
         toil.initAction = delegate
@@ -200,7 +200,7 @@ public class RangeSelection : JobDriver_Hunt
 
             var executionRange = pawn.RaceProps.executionRange;
             if ((pawn.Downed || !pawn.Awake() && !pawn.def.race.predator &&
-                    Hunting_Loader.settings.shouldApprochSleepers) &&
+                    Hunting_Loader.Settings.ShouldApproachSleepers) &&
                 (actor.Position - pawn.Position).LengthHorizontalSquared > executionRange * executionRange)
             {
                 actor.jobs.curDriver.JumpToToil(jumpToil);
@@ -209,7 +209,7 @@ public class RangeSelection : JobDriver_Hunt
         return toil;
     }
 
-    private static Toil MarvsGotoCastPosition(TargetIndex targetInd, bool closeIfDowned = false)
+    private static Toil marvsGotoCastPosition(TargetIndex targetInd, bool closeIfDowned = false)
     {
         var toil = new Toil();
         toil.initAction = delegate
@@ -237,7 +237,7 @@ public class RangeSelection : JobDriver_Hunt
             }
 
             if (closeIfDowned &&
-                (pawn.Downed || Hunting_Loader.settings.shouldApprochSleepers && !pawn.Awake()))
+                (pawn.Downed || Hunting_Loader.Settings.ShouldApproachSleepers && !pawn.Awake()))
             {
                 newReq.maxRangeFromTarget =
                     Mathf.Min(curJob.verbToUse.verbProps.range, pawn.RaceProps.executionRange);
@@ -245,8 +245,8 @@ public class RangeSelection : JobDriver_Hunt
             else
             {
                 var def = actor.equipment.Primary.def;
-                var num = GetGoodWeaponHuntingRange(def);
-                if (IsPawnTriggerHappy(actor) && !def.IsMeleeWeapon)
+                var num = getGoodWeaponHuntingRange(def);
+                if (isPawnTriggerHappy(actor) && !def.IsMeleeWeapon)
                 {
                     num += TriggerHappyRangeReduction;
                 }
@@ -256,7 +256,7 @@ public class RangeSelection : JobDriver_Hunt
                     num *= curWeatherAccuracyMultiplier;
                 }
 
-                var safeHuntingDistance = GetSafeHuntingDistance(pawn);
+                var safeHuntingDistance = getSafeHuntingDistance(pawn);
                 newReq.maxRangeFromTarget = Mathf.Max(num, safeHuntingDistance);
             }
 
@@ -283,7 +283,7 @@ public class RangeSelection : JobDriver_Hunt
         return toil;
     }
 
-    private static Toil MarvsJumpIfTargetNotHittable(TargetIndex ind, Toil jumpToil)
+    private static Toil marvsJumpIfTargetNotHittable(TargetIndex ind, Toil jumpToil)
     {
         var toil = new Toil();
         toil.initAction = delegate
@@ -303,10 +303,10 @@ public class RangeSelection : JobDriver_Hunt
                 var def = actor.equipment.Primary.def;
                 if (curJob.verbToUse != null)
                 {
-                    num = !def.IsMeleeWeapon ? GetGoodWeaponHuntingRange(def) : 0f;
+                    num = !def.IsMeleeWeapon ? getGoodWeaponHuntingRange(def) : 0f;
                 }
 
-                if (IsPawnTriggerHappy(actor) && !def.IsMeleeWeapon)
+                if (isPawnTriggerHappy(actor) && !def.IsMeleeWeapon)
                 {
                     num += TriggerHappyRangeReduction;
                 }
@@ -317,7 +317,7 @@ public class RangeSelection : JobDriver_Hunt
                 }
 
                 var huntingTarget = target.Thing as Pawn;
-                var safeHuntingDistance = GetSafeHuntingDistance(huntingTarget);
+                var safeHuntingDistance = getSafeHuntingDistance(huntingTarget);
                 if (!def.IsMeleeWeapon)
                 {
                     num = Mathf.Max(safeHuntingDistance, num);
