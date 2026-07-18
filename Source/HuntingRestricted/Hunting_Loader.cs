@@ -10,6 +10,11 @@ internal class Hunting_Loader : Mod
 {
     private const string ModName = "HRSettingsModName";
 
+    private const string SettingDistNear = "HRSettingDistNear";
+    private const string SettingDistFar = "HRSettingDistFar";
+
+    private const string SettingDistFallout = "HRSettingDistFallout";
+
     private const string SettingCollectExplodables = "HRSettingShouldCollectExplodables";
 
     private const string TooltipCollectExplodables = "HRTooltipShouldCollectExplodables";
@@ -83,11 +88,14 @@ internal class Hunting_Loader : Mod
         Settings.MinimumFoodLevel = listingStandard.SliderLabeled(
             SettingMinimumFoodLevel.Translate(Settings.MinimumFoodLevel.ToStringPercent()), Settings.MinimumFoodLevel,
             0f, 1f);
-        listingStandard.Gap();
         Settings.MinimumSleepLevel = listingStandard.SliderLabeled(
             SettingMinimumSleepLevel.Translate(Settings.MinimumSleepLevel.ToStringPercent()),
             Settings.MinimumSleepLevel,
             0f, 1f);
+        listingStandard.Gap();
+        Settings.DistNear = (int)listingStandard.SliderLabeled(
+            SettingDistNear.Translate(Settings.DistNear), Settings.DistNear, 0, 100);
+        listingStandard.Gap();
         if (currentVersion != null)
         {
             listingStandard.Gap();
@@ -101,6 +109,10 @@ internal class Hunting_Loader : Mod
 
     public class HR_Settings : ModSettings
     {
+        public int DistFallout = 50;
+        public int DistFar = 35;
+
+        public int DistNear;
         public bool IgnoreTemperature;
         public float MinimumFoodLevel = 0.4f;
 
@@ -120,6 +132,9 @@ internal class Hunting_Loader : Mod
 
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref DistNear, "b_DistNear", 0, true);
+            Scribe_Values.Look(ref DistFar, "b_DistFar", 35, true);
+            Scribe_Values.Look(ref DistFallout, "b_DistFallout", 50, true);
             Scribe_Values.Look(ref MinimumFoodLevel, "b_MinimumFoodLevel", 0.4f, true);
             Scribe_Values.Look(ref MinimumSleepLevel, "b_MinimumSleepLevel", 0.3f, true);
             Scribe_Values.Look(ref IgnoreTemperature, "b_IgnoreTemperature", false, true);

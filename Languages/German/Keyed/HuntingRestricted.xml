@@ -24,4 +24,6 @@
   <CantHuntPredatorsNotEnabled>die Zielperson ist ein Raubtier und nicht zur Jagd freigegeben</CantHuntPredatorsNotEnabled>
   <CantHuntMeleeNotEnabled>Ziel nicht für die Nahkampfjagd freigegeben</CantHuntMeleeNotEnabled>
   <CantHuntMeleeExplodingPrey>Ziel explodiert bei Tod</CantHuntMeleeExplodingPrey>
+  <CantHuntTooNear>Ziel ist zu nah für einen Fernangriff</CantHuntTooNear>
+  <HRSettingDistNear>Mindestreichweite {0}</HRSettingDistNear>
 </LanguageData>

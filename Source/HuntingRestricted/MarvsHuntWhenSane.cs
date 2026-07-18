@@ -12,11 +12,7 @@ public class MarvsHuntWhenSane
 
     private const float MovementCapacityBlock = 0.5f;
 
-    private const int DistFar = 35;
-
     private const int DistVeryFar = 150;
-
-    private const int DistFallout = 50;
 
     private const string ShootingAccuracy = "ShootingAccuracy";
 
@@ -31,6 +27,7 @@ public class MarvsHuntWhenSane
     private const string SlowMsg = "CantHuntTooSlow";
 
     private const string TemperatureMsg = "CantHuntTooWarmCold";
+    private const string NearDistanceMsg = "CantHuntTooNear";
 
     private const string SleepingPredator = "CantHuntDangerousTarget";
 
@@ -119,7 +116,7 @@ public class MarvsHuntWhenSane
         }
 
         var intVec = pawn.Position - t.Position;
-        var distanceCheck = intVec.LengthManhattan > DistFar;
+        var distanceCheck = intVec.LengthManhattan > Hunting_Loader.Settings.DistFar;
         _ = intVec.LengthManhattan > DistVeryFar;
         var pawnHungry = pawn.needs.food != null &&
                          pawn.needs.food.CurLevelPercentage < Hunting_Loader.Settings.MinimumFoodLevel;
@@ -160,7 +157,8 @@ public class MarvsHuntWhenSane
 
         var statValue = pawn.GetStatValue(StatDefOf.ToxicEnvironmentResistance);
         if (!pawn.Map.gameConditionManager.ConditionIsActive(GameConditionDefOf.ToxicFallout) ||
-            (!(statValue > 0f) || !(intVec.LengthManhattan > DistFallout * statValue)) && !pawnSlowed)
+            (!(statValue > 0f) || !(intVec.LengthManhattan > Hunting_Loader.Settings.DistFallout * statValue)) &&
+            !pawnSlowed)
         {
             return true;
         }

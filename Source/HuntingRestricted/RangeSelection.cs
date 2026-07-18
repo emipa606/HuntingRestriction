@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
@@ -183,7 +184,7 @@ public class RangeSelection : JobDriver_Hunt
             result = num;
         }
 
-        return result;
+        return Math.Max(result, Hunting_Loader.Settings.DistNear);
     }
 
     private static Toil marvsJumpIfTargetDownedDistant(TargetIndex ind, Toil jumpToil)
@@ -258,6 +259,7 @@ public class RangeSelection : JobDriver_Hunt
 
                 var safeHuntingDistance = getSafeHuntingDistance(pawn);
                 newReq.maxRangeFromTarget = Mathf.Max(num, safeHuntingDistance);
+                newReq.validator = c => (c - thing.Position).LengthHorizontal >= Mathf.Min(num, safeHuntingDistance);
             }
 
             if (!CastPositionFinder.TryFindCastPosition(newReq, out var intVec))

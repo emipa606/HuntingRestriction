@@ -24,4 +24,6 @@
   <CantHuntPredatorsNotEnabled>la cible est un prédateur et n'est pas autorisée à chasser</CantHuntPredatorsNotEnabled>
   <CantHuntMeleeNotEnabled>la cible n'est pas activée pour la chasse à la mêlée</CantHuntMeleeNotEnabled>
   <CantHuntMeleeExplodingPrey>la cible explose à la mort</CantHuntMeleeExplodingPrey>
+  <CantHuntTooNear>Cible trop proche pour une attaque à distance</CantHuntTooNear>
+  <HRSettingDistNear>Distance minimale de tir {0}</HRSettingDistNear>
 </LanguageData>

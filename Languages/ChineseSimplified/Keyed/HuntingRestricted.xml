@@ -24,4 +24,6 @@
   <CantHuntPredatorsNotEnabled>目标是捕食者，不能用于狩猎</CantHuntPredatorsNotEnabled>
   <CantHuntMeleeNotEnabled>未启用近战狩猎目标</CantHuntMeleeNotEnabled>
   <CantHuntMeleeExplodingPrey>目标死亡时爆炸</CantHuntMeleeExplodingPrey>
+  <CantHuntTooNear>目标距离过近，无法进行远程攻击</CantHuntTooNear>
+  <HRSettingDistNear>最小射程 {0}</HRSettingDistNear>
 </LanguageData>

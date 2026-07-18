@@ -24,4 +24,6 @@
   <HRSettingMinimumFoodLevel>Голод-нужда: {0}</HRSettingMinimumFoodLevel>
   <HRSettingMinimumSleepLevel>Потребность в сне: {0}</HRSettingMinimumSleepLevel>
   <HRSettingIgnoreTemperature>Игнорирование проверки опасной температуры</HRSettingIgnoreTemperature>
+  <CantHuntTooNear>цель находится слишком близко для атаки на расстоянии</CantHuntTooNear>
+  <HRSettingDistNear>Минимальное расстояние стрельбы {0}</HRSettingDistNear>
 </LanguageData>
