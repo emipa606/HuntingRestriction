@@ -11,6 +11,7 @@
     <li>1.4</li>
     <li>1.5</li>
     <li>1.6</li>
+    <li>1.7</li>
   </supportedVersions>
   <modDependencies>
     <li>
@@ -29,6 +30,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1204146321
 with permission.
 
 - Added setting for the "move in close on sleeping animals" behaviour
+- Added setting to define the minimum distance for ranged hunting
 
 [img]https://img.litet.net/logos/Notice.png[/img]
 
@@ -105,6 +107,6 @@ If you like this mod, why not consider looking at some of my [url=http://steamco
 [*] Use [url=https://github.com/RimSort/RimSort/releases/latest]RimSort[/url] to sort your mods
 [/list] 
 
-[url=https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124][img]https://img.shields.io/github/v/release/emipa606/HuntingRestriction?label=latest%20version&amp;style=plastic&amp;color=9f1111&amp;labelColor=black[/img][/url] | tags: decision, target</description>
-  <modVersion IgnoreIfNoMatchingField="True">1.6.1</modVersion>
+[url=https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124][img]https://img.shields.io/github/v/release/emipa606/HuntingRestriction?label=latest%20version&amp;style=plastic&amp;color=9f1111&amp;labelColor=black[/img][/url] | decision, target</description>
+  <modVersion IgnoreIfNoMatchingField="True">1.7.0</modVersion>
 </ModMetaData>

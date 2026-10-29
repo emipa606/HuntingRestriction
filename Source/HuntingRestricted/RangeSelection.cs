@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -130,11 +131,11 @@ public class RangeSelection : JobDriver_Hunt
             var statFactorFromList3 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyMedium);
             var statFactorFromList4 = weapon.statBases.GetStatFactorFromList(StatDefOf.AccuracyLong);
             var num2 = 0f;
-            foreach (var verbProperties in weapon.Verbs)
+            foreach (var range in weapon.Verbs.Select(verbProperties => verbProperties.range))
             {
-                if (verbProperties.range > 0f)
+                if (range > num2)
                 {
-                    num2 = verbProperties.range;
+                    num2 = range;
                 }
             }
 

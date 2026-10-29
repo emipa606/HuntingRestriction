@@ -7,6 +7,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1204146321
 with permission.
 
 - Added setting for the "move in close on sleeping animals" behaviour
+- Added setting to define the minimum distance for ranged hunting
 
 ![Image](https://img.litet.net/logos/Notice.png)
 	
@@ -77,4 +78,4 @@ If you like this mod, why not consider looking at some of my [other mods](http:/
 
  
 
-[![Image](https://img.shields.io/github/v/release/emipa606/HuntingRestriction?label=latest%20version&style=plastic&color=9f1111&labelColor=black)](https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124) | tags: decision, target
+[![Image](https://img.shields.io/github/v/release/emipa606/HuntingRestriction?label=latest%20version&style=plastic&color=9f1111&labelColor=black)](https://steamcommunity.com/sharedfiles/filedetails/changelog/2314356124) | decision, target

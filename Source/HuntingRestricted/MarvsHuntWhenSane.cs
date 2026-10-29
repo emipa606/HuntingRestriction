@@ -4,7 +4,7 @@ using Verse.AI;
 
 namespace HuntingRestricted;
 
-public class MarvsHuntWhenSane
+public static class MarvsHuntWhenSane
 {
     public const float TerribleSightThresh = 0.55f;
 
